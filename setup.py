@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name = 'rss2maildir',
@@ -10,5 +10,5 @@ setup(
     packages = ['rss2maildir'],
     package_data = {'rss2maildir': ['defaults/rss2maildir.conf']},
     scripts = ['bin/rss2maildir'],
-    requires=['feedparser']
+    install_requires=['feedparser']
 )
