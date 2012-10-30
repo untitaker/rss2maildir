@@ -154,19 +154,19 @@ class Item(object):
         message = email.MIMEMultipart.MIMEMultipart('alternative')
 
         message.set_unixfrom('%s <rss2maildir@localhost>' % item.feed.url)
-        message.add_header('From', '%s <rss2maildir@localhost>' % item.author)
-        message.add_header('To', '%s <rss2maildir@localhost>' % item.feed.url)
+        message['From'] = '%s <rss2maildir@localhost>' % item.author
+        message['To'] = '%s <rss2maildir@localhost>' % item.feed.url
 
         title = item.title.replace(u'<', u'&lt;').replace(u'>', u'&gt;')
-        message.add_header('Subject', html2text(title).strip())
+        message['Subject'] = html2text(title).strip()
 
-        message.add_header('Message-ID', item.message_id)
+        message['Message-ID'] = item.message_id
         if item.previous_message_id:
-            message.add_header('References', item.previous_message_id)
+            message['References'] = item.previous_message_id
 
-        message.add_header('Date', item.createddate)
-        message.add_header('X-rss2maildir-rundate',
-                           datetime.now().strftime('%a, %e %b %Y %T -0000'))
+        message['Date'] = item.createddate
+        message['X-rss2maildir-rundate'] = \
+                datetime.now().strftime('%a, %e %b %Y %T -0000')
 
         textpart = email.MIMEText.MIMEText(
             (item.text_template % item).encode('utf-8'),
