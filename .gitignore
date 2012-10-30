@@ -1,4 +1,7 @@
 *.py[co]
-/build
-/dist
-/MANIFEST
+build
+dist
+MANIFEST
+env
+test*
+*.egg-info

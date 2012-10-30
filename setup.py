@@ -10,5 +10,5 @@ setup(
     packages = ['rss2maildir'],
     package_data = {'rss2maildir': ['defaults/rss2maildir.conf']},
     scripts = ['bin/rss2maildir'],
-    install_requires=['feedparser']
+    install_requires=['feedparser', 'html2text']
 )
