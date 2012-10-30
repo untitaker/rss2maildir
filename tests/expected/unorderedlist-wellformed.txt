@@ -1,4 +1,0 @@
-This is a well formed unordered list.
- * The first item
- * The second item
- * The third item

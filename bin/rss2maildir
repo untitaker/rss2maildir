@@ -24,7 +24,7 @@ import logging
 from optparse import OptionParser
 
 from rss2maildir.rss2maildir import main
-from rss2maildir.Settings import settings
+from rss2maildir.settings import settings
 
 oparser = OptionParser()
 oparser.add_option(

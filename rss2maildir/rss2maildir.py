@@ -21,9 +21,8 @@ import urllib
 import logging
 import imp
 
-from .Database import Database
-from .Feed import Feed
-from .Settings import settings
+from .models import Database, Feed
+from .settings import settings
 from .utils import make_maildir
 
 log = logging.getLogger('rss2maildir')
