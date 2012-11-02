@@ -33,6 +33,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] >= 6:
 else:
     import md5
 
+
 def mkdir_p(path):
     try:
         os.makedirs(path)
@@ -42,12 +43,15 @@ def mkdir_p(path):
         else:
             raise
 
+
 def make_maildir(path):
     for dirname in (os.path.join(path, subdir)
                     for subdir in ('cur', 'tmp', 'new')):
         mkdir_p(dirname)
 
-def open_url(method, url, max_redirects = 3, redirect_on_status = (301, 302, 303, 307)):
+
+def open_url(method, url, max_redirects=3,
+             redirect_on_status=(301, 302, 303, 307)):
     log = logging.getLogger('%s %s' % (method, url))
 
     redirectcount = 0
@@ -57,16 +61,16 @@ def open_url(method, url, max_redirects = 3, redirect_on_status = (301, 302, 303
         (host, port) = urllib.splitport(host)
 
         if type_ == "https":
-            if port == None:
+            if port is None:
                 port = 443
-        elif port == None:
+        elif port is None:
             port = 80
 
         try:
             if type_ == "http":
-                conn = httplib.HTTPConnection("%s:%s" %(host, port))
+                conn = httplib.HTTPConnection("%s:%s" % (host, port))
             else:
-                conn = httplib.HTTPSConnection("%s:%s" %(host, port))
+                conn = httplib.HTTPSConnection("%s:%s" % (host, port))
             conn.request(method, path)
         except (httplib.HTTPException, socket.error) as e:
             log.warning('http request failed: %s' % str(e))
@@ -81,7 +85,8 @@ def open_url(method, url, max_redirects = 3, redirect_on_status = (301, 302, 303
                 if header[0] == "location":
                     url = header[1]
         else:
-            log.warning('Received unexpected status: %i %s' % (response.status, response.reason))
+            log.warning('Received unexpected status: %i %s' % (
+                response.status, response.reason))
             return None
 
         redirectcount = redirectcount + 1
@@ -89,9 +94,11 @@ def open_url(method, url, max_redirects = 3, redirect_on_status = (301, 302, 303
     log.warning('Maximum number of redirections reached')
     return None
 
-def generate_random_string(length,
-                           character_set = string.ascii_letters + string.digits):
+
+def generate_random_string(
+        length, character_set=string.ascii_letters + string.digits):
     return ''.join(random.choice(character_set) for n in range(length))
+
 
 def compute_hash(data):
     return md5.md5(data).hexdigest()

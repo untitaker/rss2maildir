@@ -19,10 +19,11 @@
 import os
 import ConfigParser
 
+
 class FeedConfigParser(ConfigParser.SafeConfigParser):
     def __init__(self,
-                 common_section_name = 'common',
-                 general_section_name = 'general',
+                 common_section_name='common',
+                 general_section_name='general',
                  *args, **kwargs):
         ConfigParser.SafeConfigParser.__init__(self, *args, **kwargs)
         self.common_section_name = common_section_name

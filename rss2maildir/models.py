@@ -43,14 +43,15 @@ deserialize = marshal.loads
 
 class Feed(object):
     def __init__(self, database, url, name=None):
-       self.database = database
-       self.url = url
-       self.name = name or urllib.urlencode((('', url), )).split("=")[1]
+        self.database = database
+        self.url = url
+        self.name = name or urllib.urlencode((('', url), )).split("=")[1]
 
-       if settings.has_option(url, 'maildir'):
-           self.maildir_name = settings.get(url, 'maildir')
-       else:
-           self.maildir_name = settings.get(url, 'maildir_template').replace('{}', name)
+        if settings.has_option(url, 'maildir'):
+            self.maildir_name = settings.get(url, 'maildir')
+        else:
+            self.maildir_name = settings.get(
+                url, 'maildir_template').replace('{}', name)
 
     def is_changed(self):
         try:
@@ -172,7 +173,7 @@ class Item(object):
 
         message['Date'] = item.createddate
         message['X-rss2maildir-rundate'] = \
-                datetime.now().strftime('%a, %e %b %Y %T -0000')
+            datetime.now().strftime('%a, %e %b %Y %T -0000')
 
         textpart = email.MIMEText.MIMEText(
             (item.text_template % item).encode('utf-8'),
