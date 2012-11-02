@@ -25,22 +25,20 @@ Configuration
 -------------
 
 Create a config file containing the feeds and their "names" - the names will be
-used as the directory name of the maildir for the feed. A complete example can
-be found at `rss2maildir.conf.example`::
+used as the directory name of the maildir for the feed. A complete example with
+default values can be found at `rss2maildir/rss2maildir.defaults.example`::
 
   [general]
-  state_dir = "/path/to/a/writtable/directory/to/write/state/to"
-  maildir_root = "/path/to/directory/to/write/maildirs/in"
+  state_dir = "~/rss2maildir/state.d"  # default: cwd + "state"
+  maildir_root = "~/mail/feeds"  # default: cwd + "RSSMaildir"
 
-  [http://path/to/a/rss/feed/]
-  maildir = "name of folder to put mail in"
+  [http://example.com/feed/]
+  name = "The Example Feed"
+  email = bruce.wayne@example.com  # the author of the blog
+  maildir = "example"  # items now get stored in ~/mail/feeds/example/
 
 
-*  The state_dir in the general section defaults to the current working directory + `state`.
-
-*  The maildir_root defaults to the current working directory + `RSSMaildir`.
-
-*  It doesn't really matter where you save the config file.
+It doesn't really matter where you save the config file.
 
 Execution
 ---------
