@@ -31,23 +31,14 @@ def main():
     database = Database(os.path.expanduser(settings['state_dir']))
 
     for url in settings.feeds():
-        if settings.has_option(url, 'name'):
-            name = settings.get(url, 'name')
-        else:
-            name = urllib.urlencode((('', url), )).split("=")[1]
-
-        if settings.has_option(url, 'maildir'):
-            relative_maildir = settings.get(url, 'maildir')
-        else:
-            relative_maildir = settings.get(url, 'maildir_template').replace('{}', name)
-
-        maildir = os.path.join(os.path.expanduser(settings['maildir_root']), relative_maildir)
+        feed = Feed(database, url)
+        maildir = os.path.join(os.path.expanduser(settings['maildir_root']), feed.maildir_name)
 
         try:
             make_maildir(maildir)
         except OSError as e:
             log.warning('Could not create maildir %s: %s' % (maildir, str(e)))
-            log.warning('Skipping feed %s' % url)
+            log.warning('Skipping feed %s' % feed.url)
             continue
 
         # get item filters
@@ -59,7 +50,6 @@ def main():
         # right - we've got the directories, we've got the url, we know the
         # url... lets play!
 
-        feed = Feed(database, url)
         for item in feed.new_items():
             message = item.create_message(
                 include_html_part=settings.getboolean(feed.url, 'include_html_part'),

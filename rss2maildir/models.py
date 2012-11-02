@@ -20,6 +20,7 @@
 
 import logging
 import feedparser
+import urllib
 
 from .utils import open_url, generate_random_string, mkdir_p
 
@@ -41,10 +42,15 @@ deserialize = marshal.loads
 
 
 class Feed(object):
-    def __init__(self, database, url):
-        self.database = database
-        self.url = url
-        self.name = url
+    def __init__(self, database, url, name=None):
+       self.database = database
+       self.url = url
+       self.name = name or urllib.urlencode((('', url), )).split("=")[1]
+
+       if settings.has_option(url, 'maildir'):
+           self.maildir_name = settings.get(url, 'maildir')
+       else:
+           self.maildir_name = settings.get(url, 'maildir_template').replace('{}', name)
 
     def is_changed(self):
         try:
