@@ -33,7 +33,6 @@ from datetime import datetime
 
 from html2text import html2text
 from .utils import compute_hash
-from .settings import settings
 
 import dbm
 import marshal
@@ -42,10 +41,11 @@ deserialize = marshal.loads
 
 
 class Feed(object):
-    def __init__(self, database, url, name=None):
+    def __init__(self, settings, database, url):
         self.database = database
+        self.settings = settings
         self.url = url
-        self.name = name or urllib.urlencode((('', url), )).split("=")[1]
+        self.name = settings.get(url, 'name')
 
         if settings.has_option(url, 'maildir'):
             self.maildir_name = settings.get(url, 'maildir')
@@ -105,7 +105,7 @@ class Item(object):
     def __init__(self, feed, feed_item):
         self.feed = feed
 
-        self.author = feed_item.get('author', self.feed.url)
+        self.author = feed_item.get('author', self.feed.name)
         self.title = feed_item['title']
         self.link = feed_item['link']
 
@@ -160,9 +160,12 @@ class Item(object):
 
         message = email.MIMEMultipart.MIMEMultipart('alternative')
 
-        message.set_unixfrom('%s <rss2maildir@localhost>' % item.feed.url)
-        message['From'] = '%s <rss2maildir@localhost>' % item.author
-        message['To'] = '%s <rss2maildir@localhost>' % item.feed.url
+        message['From'] = \
+                '%s <rss2maildir_author_%s@localhost>' % \
+                (item.author, hash(item.author))
+        message['To'] = \
+                '%s <rss2maildir_feed_%s@localhost>' % \
+                (item.feed.name, hash(item.feed.name))
 
         title = item.title.replace(u'<', u'&lt;').replace(u'>', u'&gt;')
         message['Subject'] = html2text(title).strip()
@@ -224,7 +227,7 @@ class Database(object):
             mkdir_p(path)
         except OSError as e:
             raise RuntimeError(
-                "Couldn't create statedir %s: %s" % (settings['state_dir'], str(e)))
+                "Couldn't create statedir %s: %s" % (path, str(e)))
 
         self.feeds = dbm.open(os.path.join(path, "feeds"), "c")
         self.seen = dbm.open(os.path.join(path, "seen"), "c")

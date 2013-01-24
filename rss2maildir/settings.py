@@ -50,5 +50,4 @@ class FeedConfigParser(ConfigParser.SafeConfigParser):
         return (section for section in self.sections()
                 if section not in (self.general_section_name, self.common_section_name))
 
-settings = FeedConfigParser()
-settings.readfp(open(os.path.join(os.path.dirname(__file__), 'rss2maildir.defaults.conf')))
+

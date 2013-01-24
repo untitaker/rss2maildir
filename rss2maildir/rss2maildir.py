@@ -21,16 +21,23 @@ import logging
 import imp
 
 from .models import Database, Feed
-from .settings import settings
+from .settings import FeedConfigParser
 from .utils import make_maildir
 
 log = logging.getLogger('rss2maildir')
+default_config_path = os.path.join(os.path.dirname(__file__), 'rss2maildir.defaults.conf')
 
-def main():
+def get_default_settings():
+    settings = FeedConfigParser()
+    settings.readfp(open(default_config_path))
+    return settings
+
+
+def main(settings=None):
     database = Database(os.path.expanduser(settings['state_dir']))
 
     for url in settings.feeds():
-        feed = Feed(database, url)
+        feed = Feed(settings, database, url)
         maildir = os.path.join(os.path.expanduser(settings['maildir_root']), feed.maildir_name)
 
         try:

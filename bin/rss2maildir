@@ -23,8 +23,9 @@ import os
 import logging
 from optparse import OptionParser
 
-from rss2maildir.rss2maildir import main
-from rss2maildir.settings import settings
+from rss2maildir.rss2maildir import main, get_default_settings
+
+settings = get_default_settings()
 
 oparser = OptionParser()
 oparser.add_option(
@@ -82,4 +83,4 @@ elif not 'state_dir' in settings:
         'rss2maildir'
     )
 
-main()
+main(settings)
