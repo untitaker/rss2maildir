@@ -33,12 +33,18 @@ def get_default_settings():
     return settings
 
 
-def update_feeds(settings=None):
+def update_feeds(settings):
     database = Database(os.path.expanduser(settings['state_dir']))
+
+
+    maildirs = set()
 
     for url in settings.feeds():
         feed = Feed(settings, database, url)
-        maildir = os.path.join(os.path.expanduser(settings['maildir_root']), feed.maildir_name)
+
+        maildir = feed.full_maildir()
+        assert maildir not in maildirs
+        maildirs.add(maildir)
 
         try:
             make_maildir(maildir)
@@ -63,6 +69,15 @@ def update_feeds(settings=None):
             )
             if item:
                 item.deliver(message, maildir)
+
+    if 'maildir_prefix' in settings:
+        import shutil
+        for name in os.listdir(settings['maildir_root']):
+            path = os.path.join(settings['maildir_root'], name)
+            if path not in maildirs and name.startswith(settings['maildir_prefix']):
+                log.warning('Trying to remove dir because it seems to be unused: %s' % path)
+                shutil.rmtree(path, ignore_errors=True)
+            
 
 def main():
     import sys

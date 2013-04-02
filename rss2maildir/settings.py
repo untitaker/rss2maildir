@@ -49,5 +49,3 @@ class FeedConfigParser(ConfigParser.SafeConfigParser):
     def feeds(self):
         return (section for section in self.sections()
                 if section not in (self.general_section_name, self.common_section_name))
-
-

@@ -22,7 +22,7 @@ import logging
 import feedparser
 import urllib
 
-from .utils import open_url, generate_random_string, mkdir_p
+from .utils import open_url, generate_random_string, mkdir_p, maildirname_join
 
 log = logging.getLogger('rss2maildir:models')
 
@@ -50,8 +50,19 @@ class Feed(object):
         if settings.has_option(url, 'maildir'):
             self.maildir_name = settings.get(url, 'maildir')
         else:
-            self.maildir_name = settings.get(
-                url, 'maildir_template').replace('{}', name)
+            self.maildir_name = name
+
+    def full_maildir(self):
+        if 'maildir_prefix' in self.settings:
+            dirname_parts = [self.settings['maildir_prefix']]
+        else:
+            dirname_parts = []
+        dirname_parts.append(self.maildir_name)
+
+        return os.path.join(
+            os.path.expanduser(self.settings['maildir_root']),
+            maildirname_join(*dirname_parts)
+        )
 
     def is_changed(self):
         try:

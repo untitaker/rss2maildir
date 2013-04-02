@@ -28,7 +28,7 @@ import urllib
 import httplib
 import logging
 
-if sys.version_info[0] == 2 and sys.version_info[1] >= 6:
+if sys.version_info >= (2, 6):
     import hashlib as md5
 else:
     import md5
@@ -38,9 +38,7 @@ def mkdir_p(path):
     try:
         os.makedirs(path)
     except OSError as e:
-        if e.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
+        if e.errno != errno.EEXIST or not os.path.isdir(path):
             raise
 
 
@@ -102,3 +100,9 @@ def generate_random_string(
 
 def compute_hash(data):
     return md5.md5(data).hexdigest()
+
+def maildirname_join(*names):
+    stripped = '.'.join(name.strip('.') for name in names)
+    prefix = '.' if names[0].startswith('.') else ''
+    suffix = '.' if names[-1].endswith('.') else ''
+    return prefix + stripped + suffix
